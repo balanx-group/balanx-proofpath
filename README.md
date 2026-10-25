@@ -20,7 +20,7 @@ Open `http://127.0.0.1:8080` in a browser. Opening `index.html` directly with a 
 4. Check the decision. Each of the eight checks is explained. The published answer is available after checking.
 5. Export a JSON session if useful. The export contains only structured fixture decisions and evaluation results.
 
-Case switches preserve drafts within the current tab. A case URL contains only its fixture ID. Reset applies to the current decision and has an undo. Reloading starts a new session. No session is automatically written to local storage or transmitted to a service.
+Case switches preserve drafts within the current tab. A case URL contains only its fixture ID. Reset applies to the current decision and has an undo. Reloading the page starts a new session. During an in-session fixture reload or failure, the previous lab is hidden and export is disabled. Retry restores drafts if the fixture bytes are unchanged; a changed library starts a fresh session. No session is automatically written to local storage or transmitted to a service.
 
 ## Run the deterministic checks
 
@@ -69,3 +69,9 @@ The first build may download its Python base image. No cloud deployment is requi
 The static interface uses native controls, explicit labels, live status messages, keyboard focus, responsive layouts and reduced-motion/forced-colors styles. It targets WCAG 2.2 AA; a certification or complete assistive-technology audit is not claimed. `DESIGN.md` records the visual system and behavior ownership. Fixture data is rendered as text rather than HTML.
 
 The MIT license applies to the original synthetic code and fixtures in this directory. It does not grant rights to BalanX production products or third-party brands. OpenAI does not sponsor or endorse this demonstration.
+
+## Verified public demonstration
+
+[Open the synthetic workflow lab](https://balanx-group.github.io/balanx-proofpath/). [Inspect the source](https://github.com/balanx-group/balanx-proofpath). The nonroot container build and served-demo smoke test passed in [public CI](https://github.com/balanx-group/balanx-proofpath/actions/runs/40167926504). Local Docker execution remains unverified.
+
+[Read the sanitized case study](CASE_STUDY.md) for one observed agent/tool-contract error and its fictional public abstraction. This is separate from the deliberately brittle script baseline and is not a controlled model benchmark.
