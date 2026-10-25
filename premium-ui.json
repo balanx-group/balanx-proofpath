@@ -1,0 +1,21 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["index.html", "app.js", "style.css"],
+  "locale": "en-US",
+  "canonicalMap": "DESIGN.md",
+  "requiredCapabilities": ["Select/Listbox", "Form", "Scrollbar"],
+  "ownership": {
+    "Select/Listbox": "native",
+    "Form": "app.js readDecision/evaluateDecision/restoreDraft",
+    "Scrollbar": "style.css global baseline"
+  },
+  "requiredCommands": ["syntax"],
+  "commands": {
+    "syntax": "node --check app.js"
+  },
+  "evidence": {
+    "scoringContract": "benchmark.py",
+    "failurePaths": "test_benchmark.py",
+    "openFixtures": "scenarios.json"
+  }
+}

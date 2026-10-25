@@ -1,0 +1,44 @@
+name: Verify synthetic benchmark and container
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Check benchmark invariants
+        run: python3 -m unittest -q test_benchmark.py
+      - name: Verify deterministic checked-in results
+        run: |
+          python3 benchmark.py --output /tmp/proofpath-results.json
+          diff results.json /tmp/proofpath-results.json
+      - name: Build nonroot container
+        run: docker build --tag proofpath-smoke .
+      - name: Run container and verify served demo
+        run: |
+          docker run --detach --rm --name proofpath-smoke --memory 128m --cpus 1 --publish 127.0.0.1:8080:8080 proofpath-smoke
+          python3 - <<'PY'
+          import json, time, urllib.request
+          for attempt in range(20):
+              try:
+                  with urllib.request.urlopen('http://127.0.0.1:8080/scenarios.json', timeout=2) as response:
+                      dataset = json.load(response)
+                  break
+              except OSError:
+                  time.sleep(1)
+          else:
+              raise SystemExit('Container did not become ready')
+          assert len(dataset['scenarios']) == 16
+          with urllib.request.urlopen('http://127.0.0.1:8080/') as response:
+              html = response.read().decode()
+          assert 'ProofPath' in html
+          print('Container serves the 16-case synthetic demo.')
+          PY
+      - name: Stop smoke container
+        if: always()
+        run: docker rm --force proofpath-smoke || true
