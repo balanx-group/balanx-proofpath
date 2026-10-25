@@ -92,7 +92,7 @@ if (typeof module !== 'undefined' && module.exports) {
 }
 
 if (typeof document !== 'undefined') {
-  const state = { library: null, activeId: null, datasetHash: null, drafts: new Map(), results: new Map(), attempts: [], undo: new Map(), loadGeneration: 0 };
+  const state = { library: null, libraryReady: false, datasetSource: null, activeId: null, datasetHash: null, drafts: new Map(), results: new Map(), attempts: [], undo: new Map(), loadGeneration: 0 };
   const byId = id => document.getElementById(id);
   const element = (tag, text, className) => { const node = document.createElement(tag); if (text !== undefined) node.textContent = text; if (className) node.className = className; return node; };
   const clone = value => JSON.parse(JSON.stringify(value));
@@ -121,6 +121,12 @@ if (typeof document !== 'undefined') {
 
   async function loadLibrary() {
     const generation = ++state.loadGeneration;
+    if (state.libraryReady && state.activeId) state.drafts.set(state.activeId, readDecision());
+    state.libraryReady = false;
+    byId('lab').hidden = true;
+    byId('export-session').disabled = true;
+    byId('progress-label').textContent = state.datasetSource ? 'Reloading fixtures…' : 'Loading fixtures…';
+    byId('baseline-results').replaceChildren(element('p', 'Scripted score totals are unavailable until the fixture library is loaded and its fingerprint is checked.'));
     byId('retry-load').hidden = true;
     byId('load-state').hidden = false;
     byId('load-message').textContent = 'Loading the synthetic case library…';
@@ -130,23 +136,32 @@ if (typeof document !== 'undefined') {
       const library = validateLibrary(JSON.parse(raw));
       const hash = await datasetHash(raw);
       if (generation !== state.loadGeneration) return;
-      state.library = library; state.datasetHash = hash;
       if (!library.scenarios.length) {
         byId('load-message').textContent = 'This library has no cases yet. Add synthetic fixtures to scenarios.json and load it again.';
         byId('retry-load').hidden = false;
         byId('progress-label').textContent = 'No fixtures available';
         return;
       }
+      const changedLibrary = state.datasetSource !== null && state.datasetSource !== raw;
+      if (changedLibrary) {
+        state.drafts.clear(); state.results.clear(); state.attempts = []; state.undo.clear(); state.activeId = null;
+      }
+      state.library = library; state.datasetHash = hash; state.datasetSource = raw;
       buildCaseIndex();
       buildReasons();
+      state.libraryReady = true;
       const requested = new URL(window.location.href).searchParams.get('case');
       const firstId = library.scenarios.some(scenario => scenario.id === requested) ? requested : library.scenarios[0].id;
       selectCase(firstId, { focus: false, historyMode: 'replace' });
       byId('lab').hidden = false; byId('load-state').hidden = true;
       byId('export-session').disabled = false;
+      if (changedLibrary) announce('The fixture library changed. A new practice session has started so previous decisions are not applied to different evidence.');
       loadBaseline(generation);
     } catch (error) {
       if (generation !== state.loadGeneration) return;
+      state.libraryReady = false;
+      byId('lab').hidden = true;
+      byId('export-session').disabled = true;
       byId('load-message').textContent = `The case library could not be loaded. Open this folder through a local web server (see Method and running locally), then try again. ${error.name === 'AbortError' ? 'The request timed out.' : error.message}`;
       byId('retry-load').hidden = false;
       byId('progress-label').textContent = 'Fixtures unavailable';
@@ -157,7 +172,7 @@ if (typeof document !== 'undefined') {
     const target = byId('baseline-results');
     try {
       const report = JSON.parse(await fetchText('results.json'));
-      if (generation !== state.loadGeneration) return;
+      if (generation !== state.loadGeneration || !state.libraryReady) return;
       target.replaceChildren();
       if (!state.datasetHash || report.dataset_sha256 !== state.datasetHash) {
         target.append(element('p', !state.datasetHash ? 'Scripted score totals are hidden because SHA-256 is unavailable in this browser context. Open the demo on localhost or HTTPS and reload to verify the fixture fingerprint.' : 'Scripted score totals are hidden because their dataset hash differs from this loaded library. Run python3 benchmark.py --output results.json to regenerate matching results.'));
@@ -192,10 +207,12 @@ if (typeof document !== 'undefined') {
 
   function buildReasons() {
     const select = byId('decision-reason');
+    const placeholder = element('option', 'Choose a reason'); placeholder.value = ''; select.replaceChildren(placeholder);
     Object.entries(REASONS).forEach(([value, label]) => { const option = element('option', label); option.value = value; select.append(option); });
   }
 
   function selectCase(id, { focus = true, historyMode = 'push' } = {}) {
+    if (!state.libraryReady) return;
     const scenario = state.library.scenarios.find(item => item.id === id); if (!scenario) return;
     if (state.activeId) state.drafts.set(state.activeId, readDecision());
     state.activeId = id;
@@ -276,7 +293,7 @@ if (typeof document !== 'undefined') {
   }
 
   function markEdited() {
-    if (!state.activeId) return;
+    if (!state.libraryReady || !state.activeId) return;
     state.drafts.set(state.activeId, readDecision()); state.results.delete(state.activeId); state.undo.delete(state.activeId);
     byId('undo-reset').hidden = true; clearValidation(); updateEvidenceCount(); renderFeedback(); updateProgress();
   }
@@ -308,7 +325,9 @@ if (typeof document !== 'undefined') {
   }
 
   function checkDecision(event) {
-    event.preventDefault(); clearValidation(); const prediction = readDecision();
+    event.preventDefault();
+    if (!state.libraryReady) { announce('Load a validated fixture library before checking a decision.'); return; }
+    clearValidation(); const prediction = readDecision();
     if (!prediction.action || !prediction.reason) {
       const field = !prediction.action ? document.querySelector('input[name="action"]') : byId('decision-reason');
       const message = !prediction.action ? 'Choose the next action before checking the decision.' : 'Choose the decisive reason before checking the decision.';
@@ -323,6 +342,7 @@ if (typeof document !== 'undefined') {
   }
 
   function resetDecision() {
+    if (!state.libraryReady) return;
     state.undo.set(state.activeId, { draft: clone(readDecision()), evaluation: state.results.get(state.activeId) || null });
     state.drafts.set(state.activeId, emptyDecision()); state.results.delete(state.activeId);
     restoreDraft(emptyDecision()); clearValidation(); renderFeedback(); updateProgress(); byId('undo-reset').hidden = false;
@@ -330,6 +350,7 @@ if (typeof document !== 'undefined') {
   }
 
   function undoReset() {
+    if (!state.libraryReady) return;
     const previous = state.undo.get(state.activeId); if (!previous) return;
     state.drafts.set(state.activeId, previous.draft); if (previous.evaluation) state.results.set(state.activeId, previous.evaluation);
     restoreDraft(previous.draft); renderFeedback(previous.evaluation); updateProgress(); state.undo.delete(state.activeId); byId('undo-reset').hidden = true;
@@ -337,6 +358,7 @@ if (typeof document !== 'undefined') {
   }
 
   function exportSession() {
+    if (!state.libraryReady) { announce('Load a validated fixture library before exporting this session.'); return; }
     const report = {
       schema_version: 'proofpath-browser-session-1',
       title: 'ProofPath synthetic practice session',
@@ -362,6 +384,6 @@ if (typeof document !== 'undefined') {
   byId('case-select').addEventListener('change', event => selectCase(event.target.value));
   window.ProofPathUI = Object.freeze({ resetDecision, undoReset, retryLoad: loadLibrary });
   byId('export-session').addEventListener('click', exportSession);
-  window.addEventListener('popstate', () => { if (state.library) selectCase(new URL(window.location.href).searchParams.get('case') || state.library.scenarios[0].id, { focus: false, historyMode: 'none' }); });
+  window.addEventListener('popstate', () => { if (state.libraryReady) selectCase(new URL(window.location.href).searchParams.get('case') || state.library.scenarios[0].id, { focus: false, historyMode: 'none' }); });
   loadLibrary();
 }
