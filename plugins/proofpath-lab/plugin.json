@@ -1,8 +1,8 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "proofpath-lab",
-  "version": "0.1.0",
-  "description": "Explore fictional workflow decisions, cite versioned evidence, and check predictions with an offline deterministic reference.",
+  "version": "0.1.1",
+  "description": "BalanX ProofPath Lab: explore fictional workflow decisions, cite versioned evidence, and check predictions with an offline deterministic reference.",
   "author": {
     "name": "BalanX LLC"
   },
@@ -18,9 +18,9 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "ProofPath Lab",
+        "displayName": "BalanX ProofPath Lab",
         "shortDescription": "Check workflow evidence",
-        "longDescription": "Practice evidence-aware workflow decisions using 16 fictional cases. Inspect versioned policy, consent, evidence, checkpoints and receipts; explain when to hold, refresh, reuse a confirmed receipt or propose a submission. A bundled Python standard-library checker scores explicitly supplied decisions against the public deterministic reference. The package uses synthetic fixtures only and has no MCP server, account, network calls or live submissions. The reference rules and deliberately brittle baseline are scripts, not measured language-model performance. If the host cannot run Python, the skill can explain the bundled cases and must label analysis as unexecuted. Intended for developers, educators and evaluators.",
+        "longDescription": "BalanX ProofPath Lab helps you practice evidence-aware workflow decisions using 16 fictional cases. Inspect versioned policy, consent, evidence, checkpoints and receipts; explain when to hold, refresh, reuse a confirmed receipt or propose a submission. A bundled offline checker scores explicitly supplied decisions against the public deterministic reference. The package uses synthetic fixtures only and has no MCP server, account, network calls or live submissions. The reference rules and deliberately brittle baseline are scripts, not measured language-model performance. If the host cannot execute the checker, the skill can explain the bundled cases and must label analysis as unexecuted. Intended for developers, educators and evaluators.",
         "category": "Developer Tools",
         "capabilities": [],
         "defaultPrompt": [
@@ -42,7 +42,7 @@
         ]
       },
       "publication": {
-        "release_notes": "Initial skills-only release with 16 bundled synthetic fixtures, a constrained offline checker, provenance, and evidence-based walkthrough instructions.",
+        "release_notes": "BalanX branding and descriptive-copy revision. Runtime behavior and the bundled synthetic fixtures are unchanged.",
         "countries": []
       }
     }

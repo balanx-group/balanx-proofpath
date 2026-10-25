@@ -73,7 +73,7 @@ Canonical UI map for this single-screen application:
 | Status feedback | `announce` and `renderFeedback` | check/reset/export outcomes | neutral / matched / needs review | live-region and focus checks |
 | Export | `exportSession` | current session evaluations | JSON download only | parsed export inspection |
 
-Single view with no CRUD, authentication, uploads, payments, or real permission changes. Consequently no separate UX-CONTRACT.md is required. Proposed ChatGPT integration is explanatory prose and does not present a fake sign-in button. Fixtures load once with an abortable timeout and an explicit retry. Optional script results cannot invalidate the workflow if unavailable; show their absence plainly. Inputs use native semantics. Validation is owned by the product; no native dialogs or validation bubbles. DOM content uses text nodes, not HTML interpolation of fixture data.
+Single view with no CRUD, authentication, uploads, payments, or real permission changes. Consequently no separate UX-CONTRACT.md is required. Proposed identity integration is explanatory prose and does not present a fake sign-in button. Fixtures load once with an abortable timeout and an explicit retry. Optional script results cannot invalidate the workflow if unavailable; show their absence plainly. Inputs use native semantics. Validation is owned by the product; no native dialogs or validation bubbles. DOM content uses text nodes, not HTML interpolation of fixture data.
 
 ## Do's and Don'ts
 

@@ -39,7 +39,7 @@ The browser scorer mirrors the Python checks: correct action, correct reason, re
 - The suite contains hand-constructed, openly visible demonstration fixtures. It is not a representative statistical benchmark, a blind evaluation, or a security guarantee.
 - The intentionally brittle scripted baseline ignores selected version, authority and intent constraints. It is useful for making failure modes reproducible. It is **not an AI model**.
 - The rule-based reference is designed for this finite toy schema. A perfect score does not establish real-world reliability.
-- No OpenAI model, autonomous agent, live BalanX product, customer deployment, clinical workflow, or public service is evaluated by the included script results.
+- No language model, autonomous agent, live BalanX product, customer deployment, clinical workflow, or public service is evaluated by the included script results.
 - No service credentials, personal data, production code, external dependencies, analytics, remote fonts, or API calls are required.
 - Browser decisions are local practice records. Downloads may be stored wherever the user's browser normally saves files.
 
@@ -47,9 +47,9 @@ The browser scorer mirrors the Python checks: correct action, correct reason, re
 
 Researchers and builders can inspect the failure conditions, reproduce them at no inference cost, extend the synthetic cases, and compare structured decisions against explicit expectations. The immediate benefit is a small auditable teaching and testing artifact for reducing duplicate actions, excessive disclosure and unsupported success claims in administrative workflows. Any impact on real people or services remains to be evaluated. See [RESEARCH.md](RESEARCH.md) for the research framing and proposed extensions.
 
-## Proposed Sign in with ChatGPT exploration
+## Proposed account continuity
 
-BalanX is exploring identity and, where approved and eligible, ChatGPT-plan integration for its products, which the owner describes as implemented and in beta testing. ProofPath is a separate supporting prototype. It does not implement OpenAI authentication, consume plan entitlements, or make model requests. A future research integration would need approval, documented permissions, and separate evaluation.
+BalanX is exploring identity and, where approved and eligible, eligible-plan integration for its products, which the owner describes as implemented and in beta testing. ProofPath is a separate supporting prototype. It does not implement external-provider authentication, consume plan entitlements, or make model requests. A future research integration would need approval, documented permissions, and separate evaluation.
 
 ## Container packaging
 
@@ -68,7 +68,7 @@ The first build may download its Python base image. No cloud deployment is requi
 
 The static interface uses native controls, explicit labels, live status messages, keyboard focus, responsive layouts and reduced-motion/forced-colors styles. It targets WCAG 2.2 AA; a certification or complete assistive-technology audit is not claimed. `DESIGN.md` records the visual system and behavior ownership. Fixture data is rendered as text rather than HTML.
 
-The MIT license applies to the original synthetic code and fixtures in this directory. It does not grant rights to BalanX production products or third-party brands. OpenAI does not sponsor or endorse this demonstration.
+The MIT license applies to the original synthetic code and fixtures in this directory. It does not grant rights to BalanX production products or third-party brands. No external provider sponsors or endorses this demonstration.
 
 ## Verified public demonstration
 
@@ -77,10 +77,14 @@ The MIT license applies to the original synthetic code and fixtures in this dire
 [Read the sanitized case study](CASE_STUDY.md) for one observed agent/tool-contract error and its fictional public abstraction. This is separate from the deliberately brittle script baseline and is not a controlled model benchmark.
 
 
-## ProofPath Lab plugin package
+## BalanX ProofPath Lab package
 
-[Download the skills-only package](https://balanx-group.github.io/balanx-proofpath/proofpath-lab-0.1.0.zip) or [read its documentation](https://balanx-group.github.io/balanx-proofpath/plugin.html). Source is in `plugins/proofpath-lab/`.
+[Download the skills-only package](https://balanx-group.github.io/balanx-proofpath/balanx-proofpath-lab-0.1.1.zip) or [read its documentation](https://balanx-group.github.io/balanx-proofpath/plugin.html). Source is in `plugins/proofpath-lab/`.
 
 The package contains 16 fictional cases, teaching instructions and an optional offline Python checker. Hosts that cannot execute Python can explain cases with an explicit unexecuted-analysis label. It has no server, account or API connection. Cross-host import and invocation have not yet been tested; the package is prepared for directory review and has not been listed or approved.
 
 The ZIP passed 25 package/CLI checks, followed by 13 focused final metadata and inventory checks after its listing URLs were verified. The open fixture reference is deterministic; its scores are not language-model results or proof of production safety.
+
+## Reviewer evidence index
+
+[Inspect BalanX ProofPath evidence](REVIEWER_GUIDE.md): implemented dataflow, traceable cases, reproducibility steps and measured limits. Version 0.1.1 changes package branding copy only, preserves the reviewed runtime and fixtures, and passed 20 focused metadata, inventory and branding checks. Historical version 0.1.0 is retained as the exact evidence referenced by earlier submissions.

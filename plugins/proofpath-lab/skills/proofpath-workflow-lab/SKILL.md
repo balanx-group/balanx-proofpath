@@ -3,11 +3,11 @@ name: proofpath-workflow-lab
 description: "Use when the user explicitly asks to practice, inspect, explain, or score ProofPath's fictional workflow cases, including policy changes, permission withdrawal, duplicate actions, stale context, and unverified completion."
 ---
 
-# ProofPath workflow lab
+# BalanX ProofPath workflow lab
 
 Help the user reason about the bundled fictional scenarios. Every case, identity,
 policy and receipt is synthetic. The expected answers are public; this is an open
-regression and teaching set, not a blind benchmark or an evaluation of an OpenAI model.
+regression and teaching set, not a blind benchmark or an evaluation of any model.
 
 ## Start with the requested task
 
@@ -24,8 +24,8 @@ regression and teaching set, not a blind benchmark or an evaluation of an OpenAI
 
 ## Run the optional offline checker
 
-Resolve paths relative to this skill directory. Use an available Python 3 interpreter;
-the scripts need only its standard library. Do not install dependencies or start a
+Resolve paths relative to this skill directory. Use the version-3 interpreter
+shown in the commands below; the scripts need only its standard library. Do not install dependencies or start a
 server. The script reads the bundled, hash-pinned fixture file and prints JSON:
 
 ```sh
@@ -46,7 +46,7 @@ A `submit` action means the reference would permit the fictional next action;
 it is not an actual submission. `reuse_receipt` means report a previously verified
 fictional outcome without creating a new transaction.
 
-If Python or package files are unavailable, explain the case using the bundled
+If the interpreter or package files are unavailable, explain the case using the bundled
 reference text and available fixture data. Label that as reasoning without an
 executed check. Never fabricate a command result or score. If the fixture hash
 fails, stop that execution and report that the package needs repair.

@@ -1,5 +1,5 @@
 interface:
-  display_name: "ProofPath Lab"
+  display_name: "BalanX ProofPath Lab"
   short_description: "Check workflow evidence"
   default_prompt: "Walk me through a fictional ProofPath case and its evidence."
 policy:
