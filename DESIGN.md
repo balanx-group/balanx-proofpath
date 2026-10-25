@@ -50,7 +50,7 @@ Runtime ownership is Model B: the single `:root` palette in `style.css` is canon
 
 Desktop: bounded case-index column + flexible evidence column + decision receipt. At 1120px the receipt follows the evidence. Below 760px the case index becomes a native select and the layout becomes a single column. The page owns document scrolling; the desktop case list may scroll within its own bounded region. No ancestor height/overflow lock. Controls are at least 44px high.
 
-The case ID in `?case=` is shareable. Per-case drafts and check results live in memory and survive case switches for the current tab session. Reloading starts a fresh session. A reset clears only that case and offers an in-memory undo. Exports are explicitly downloaded by the user and contain fixture decisions, not arbitrary free text.
+The case ID in `?case=` is shareable. Per-case drafts and check results live in memory and survive case switches for the current tab session. Reloading the page starts a fresh session. An in-session fixture reload hides the old lab, disables export, and removes baseline totals until validated fixtures are available. Retry preserves drafts only when the fixture bytes are identical; a changed library begins a new session. A reset clears only that case and offers an in-memory undo. Exports are explicitly downloaded by the user and contain fixture decisions, not arbitrary free text.
 
 ## Elevation & Depth
 
