@@ -75,3 +75,12 @@ The MIT license applies to the original synthetic code and fixtures in this dire
 [Open the synthetic workflow lab](https://balanx-group.github.io/balanx-proofpath/). [Inspect the source](https://github.com/balanx-group/balanx-proofpath). The nonroot container build and served-demo smoke test passed in [public CI](https://github.com/balanx-group/balanx-proofpath/actions/runs/40167926504). Local Docker execution remains unverified.
 
 [Read the sanitized case study](CASE_STUDY.md) for one observed agent/tool-contract error and its fictional public abstraction. This is separate from the deliberately brittle script baseline and is not a controlled model benchmark.
+
+
+## ProofPath Lab plugin package
+
+[Download the skills-only package](https://balanx-group.github.io/balanx-proofpath/proofpath-lab-0.1.0.zip) or [read its documentation](https://balanx-group.github.io/balanx-proofpath/plugin.html). Source is in `plugins/proofpath-lab/`.
+
+The package contains 16 fictional cases, teaching instructions and an optional offline Python checker. Hosts that cannot execute Python can explain cases with an explicit unexecuted-analysis label. It has no server, account or API connection. Cross-host import and invocation have not yet been tested; the package is prepared for directory review and has not been listed or approved.
+
+The ZIP passed 25 package/CLI checks, followed by 13 focused final metadata and inventory checks after its listing URLs were verified. The open fixture reference is deterministic; its scores are not language-model results or proof of production safety.
