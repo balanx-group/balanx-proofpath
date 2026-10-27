@@ -1,0 +1,64 @@
+name: BalanX Azure connection
+on:
+  workflow_dispatch:
+permissions: {}
+concurrency:
+  group: balanx-azure-connection-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write
+    env:
+      AZURE_CORE_OUTPUT: none
+      AZURE_CORE_COLLECT_TELEMETRY: 'false'
+      AZURE_CLIENT_ID: ${{ secrets.BALANX_AZURE_CONNECTION_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.BALANX_AZURE_CONNECTION_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ secrets.BALANX_AZURE_CONNECTION_SUBSCRIPTION_ID }}
+      AZURE_RESOURCE_GROUP: ${{ secrets.BALANX_AZURE_CONNECTION_RESOURCE_GROUP }}
+      REPOSITORY_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: Check configuration and trusted branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os, re, uuid
+          for key in ['AZURE_CLIENT_ID', 'AZURE_TENANT_ID', 'AZURE_SUBSCRIPTION_ID']:
+              try:
+                  uuid.UUID(os.environ[key])
+              except (ValueError, KeyError):
+                  raise SystemExit('Missing or invalid encrypted configuration: ' + key)
+          if not re.fullmatch(r'[A-Za-z0-9_.()-]{1,90}', os.environ.get('AZURE_RESOURCE_GROUP', '')):
+              raise SystemExit('Missing or invalid encrypted configuration: AZURE_RESOURCE_GROUP')
+          if os.environ['GITHUB_REF'] != 'refs/heads/' + os.environ['REPOSITORY_DEFAULT_BRANCH']:
+              raise SystemExit('Use the configured default branch for this connection check.')
+          print('Required configuration and default-branch context passed.')
+          PY
+      - name: Sign in to company Azure
+        uses: azure/login@7184910d9eb2b1c5e48f7073824a90609bb9b6d6 # v2
+        with:
+          client-id: ${{ secrets.BALANX_AZURE_CONNECTION_CLIENT_ID }}
+          tenant-id: ${{ secrets.BALANX_AZURE_CONNECTION_TENANT_ID }}
+          subscription-id: ${{ secrets.BALANX_AZURE_CONNECTION_SUBSCRIPTION_ID }}
+          audience: api://AzureADTokenExchange
+          auth-type: SERVICE_PRINCIPAL
+      - name: Check tenant, subscription and resource-group deployment
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(az account show --query tenantId -o tsv)" = "$AZURE_TENANT_ID"
+          test "$(az account show --query id -o tsv)" = "$AZURE_SUBSCRIPTION_ID"
+          test "$(az group show --name "$AZURE_RESOURCE_GROUP" --query name -o tsv)" = "$AZURE_RESOURCE_GROUP"
+          template="$RUNNER_TEMP/balanx-empty-template.json"
+          cat > "$template" <<'JSON'
+          {"$schema":"https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#","contentVersion":"1.0.0.0","resources":[]}
+          JSON
+          state=$(az deployment group create --resource-group "$AZURE_RESOURCE_GROUP" \
+            --name "github-connection-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --template-file "$template" --mode Incremental \
+            --query properties.provisioningState -o tsv)
+          test "$state" = Succeeded
+          printf '%s\n' 'Company Azure login, tenant, subscription, resource-group access and empty deployment passed.' >> "$GITHUB_STEP_SUMMARY"
