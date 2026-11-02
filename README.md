@@ -85,6 +85,10 @@ The package contains 16 fictional cases, teaching instructions and an optional o
 
 The ZIP passed 25 package/CLI checks, followed by 13 focused final metadata and inventory checks after its listing URLs were verified. The open fixture reference is deterministic; its scores are not language-model results or proof of production safety.
 
+## Partner evaluation exports
+
+Create a deterministic batch of the 16 public synthetic cases for a selected partner sandbox with `python3 partner_exports.py export /absolute/path/to/new-export`. Check the exact exported bytes with `python3 partner_exports.py verify /absolute/path/to/new-export`. Each decision preserves its dataset version, content hash and evidence references, including stale or mismatched records. [Read the Databricks and Neo4j evaluation guide](PARTNER_INTEGRATIONS.md) for native import templates, readback requirements and the remaining access and funding steps. These exports have local integrity checks; vendor execution and partner validation remain pending.
+
 ## Reviewer evidence index
 
 [Inspect BalanX ProofPath evidence](REVIEWER_GUIDE.md): implemented dataflow, traceable cases, reproducibility steps and measured limits. Version 0.1.1 changes package branding copy only, preserves the reviewed runtime and fixtures, and passed 20 focused metadata, inventory and branding checks. Historical version 0.1.0 is retained as the exact evidence referenced by earlier submissions.
