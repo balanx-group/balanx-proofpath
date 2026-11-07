@@ -2,9 +2,17 @@ name: BrowserStack web QA
 
 on:
   workflow_dispatch:
-  push:
-    branches: [codex/browserstack-qa]
-    paths: [.github/workflows/browserstack-web.yml]
+    inputs:
+      commercial_use_confirmed:
+        description: 'Confirm this account permits BalanX commercial use of Automate Playwright'
+        required: true
+        type: boolean
+        default: false
+      included_quota_confirmed:
+        description: 'Confirm BrowserStack and GitHub included quota cover this run with zero extra spend'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -15,7 +23,12 @@ concurrency:
 
 jobs:
   browserstack:
-    if: github.event_name == 'push' || github.ref_name == github.event.repository.default_branch
+    # Confirm current product terms and remaining included quota before each run.
+    # This job condition is evaluated before a hosted runner is allocated.
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref_name == github.event.repository.default_branch &&
+      inputs.commercial_use_confirmed && inputs.included_quota_confirmed
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
