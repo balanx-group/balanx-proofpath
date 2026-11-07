@@ -3,13 +3,13 @@ name: BrowserStack web QA
 on:
   workflow_dispatch:
     inputs:
-      commercial_use_confirmed:
-        description: 'Confirm this account permits BalanX commercial use of Automate Playwright'
+      account_use_confirmed:
+        description: 'Confirm Automate Playwright is eligible for this repo and intended use under the selected plan, including any student or commercial-use terms'
         required: true
         type: boolean
         default: false
-      included_quota_confirmed:
-        description: 'Confirm BrowserStack and GitHub included quota cover this run with zero extra spend'
+      usage_funding_confirmed:
+        description: 'Use eligible student benefits and included usage first; confirm any remainder is covered by existing pay-as-you-go billing'
         required: true
         type: boolean
         default: false
@@ -23,12 +23,12 @@ concurrency:
 
 jobs:
   browserstack:
-    # Confirm current product terms and remaining included quota before each run.
+    # Confirm current plan eligibility and available funding before each run.
     # This job condition is evaluated before a hosted runner is allocated.
     if: >-
       github.event_name == 'workflow_dispatch' &&
       github.ref_name == github.event.repository.default_branch &&
-      inputs.commercial_use_confirmed && inputs.included_quota_confirmed
+      inputs.account_use_confirmed && inputs.usage_funding_confirmed
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
