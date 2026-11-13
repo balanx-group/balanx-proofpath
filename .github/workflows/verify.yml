@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Check benchmark invariants
-        run: python3 -m unittest -q test_benchmark.py
+        run: python3 -m unittest -q test_benchmark.py test_partner_exports.py
       - name: Verify deterministic checked-in results
         run: |
           python3 benchmark.py --output /tmp/proofpath-results.json
