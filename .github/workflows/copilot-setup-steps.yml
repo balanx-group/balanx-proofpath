@@ -11,7 +11,7 @@ jobs:
     runs-on: balanx-azure-balanx-proofpath-copilot
     permissions:
       contents: read
-    timeout-minutes: 5
+    timeout-minutes: 59
     steps:
       - name: Verify Ubuntu x64 setup environment
         shell: bash
